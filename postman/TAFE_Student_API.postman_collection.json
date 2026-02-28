@@ -1,0 +1,379 @@
+{
+	"info": {
+		"_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+		"name": "TAFE Student Management API v1",
+		"description": "Complete API collection for testing the TAFE Student Management System v1.\n\nThis collection demonstrates:\n- HTTP methods (GET, POST, PUT, DELETE)\n- Request headers and body\n- Response status codes\n- Nested JSON responses\n- Query parameters\n- Path parameters\n- API versioning (v1)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"item": [
+				{
+					"name": "API Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+						"v1",
+								"health"
+							]
+						},
+						"description": "Check if the API is running and healthy.\n\n**Expected Response:**\n- Status Code: 200 OK\n- Response contains: status, timestamp, service name"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Programs",
+			"item": [
+				{
+					"name": "Get All Programs",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/programs",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+						"v1",
+								"v1",
+								"programs"
+							]
+						},
+						"description": "Retrieve a list of all available programs with enrollment counts.\n\n**HTTP Method:** GET\n**Expected Response:**\n- Status Code: 200 OK\n- Content-Type: application/json\n- Body: Array of program objects with enrolled_students count"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Program by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/programs/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+						"v1",
+								"programs",
+								"1"
+							]
+						},
+						"description": "Get details of a specific program by its ID.\n\n**HTTP Method:** GET\n**Path Parameter:** program_id\n**Expected Response:**\n- Status Code: 200 OK (if found)\n- Status Code: 404 Not Found (if program doesn't exist)\n- Body: Program object with details"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Students",
+			"item": [
+				{
+					"name": "Get All Students",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/students?page=1&per_page=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+						"v1",
+								"students"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number (default: 1)"
+								},
+								{
+									"key": "per_page",
+									"value": "10",
+									"description": "Items per page (default: 10)"
+								},
+								{
+									"key": "program_id",
+									"value": "2",
+									"description": "Filter by program ID",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Retrieve a paginated list of students.\n\n**HTTP Method:** GET\n**Query Parameters:**\n- page: Page number (optional)\n- per_page: Items per page (optional)\n- program_id: Filter by program (optional)\n\n**Expected Response:**\n- Status Code: 200 OK\n- Body: Array of student summaries with pagination metadata"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Students by Program",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/students?program_id=2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+						"v1",
+								"students"
+							],
+							"query": [
+								{
+									"key": "program_id",
+									"value": "2",
+									"description": "Filter students by program ID"
+								}
+							]
+						},
+						"description": "Get students enrolled in a specific program.\n\n**Query Parameter:** program_id\n**Expected Response:**\n- Status Code: 200 OK\n- Body: Filtered list of students"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Student Details (Nested JSON)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/students/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+						"v1",
+								"students",
+								"1"
+							]
+						},
+						"description": "Get detailed information about a student including their program as nested JSON.\n\n**HTTP Method:** GET\n**Path Parameter:** student_id\n**Expected Response:**\n- Status Code: 200 OK (if found)\n- Status Code: 404 Not Found (if student doesn't exist)\n- Body: Student object with nested program object\n\n**Data Transformation Example:**\nThis endpoint demonstrates how flat database data is transformed into nested JSON:\n- Database: student.program_id → program table lookup\n- API Response: student object with embedded program object"
+					},
+					"response": []
+				},
+				{
+					"name": "Create New Student",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe\",\n  \"email\": \"john.doe@student.tafe.edu.au\",\n  \"enrollment_date\": \"2024-02-26\",\n  \"program_id\": 2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/students",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+						"v1",
+								"students"
+							]
+						},
+						"description": "Create a new student record.\n\n**HTTP Method:** POST\n**Headers:**\n- Content-Type: application/json\n- Accept: application/json\n\n**Request Body (JSON):**\n- first_name: Required\n- last_name: Required\n- email: Required (must be unique)\n- program_id: Required (must exist)\n- enrollment_date: Optional (defaults to today)\n\n**Expected Responses:**\n- Status Code: 201 Created (success)\n- Status Code: 400 Bad Request (validation error)\n- Status Code: 404 Not Found (program doesn't exist)\n- Status Code: 409 Conflict (email already exists)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Student",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Smith\",\n  \"email\": \"john.smith@student.tafe.edu.au\",\n  \"program_id\": 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/students/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+						"v1",
+								"students",
+								"1"
+							]
+						},
+						"description": "Update an existing student's information.\n\n**HTTP Method:** PUT\n**Path Parameter:** student_id\n**Headers:**\n- Content-Type: application/json\n\n**Request Body:** All fields are optional, only provided fields will be updated\n\n**Expected Responses:**\n- Status Code: 200 OK (success)\n- Status Code: 404 Not Found (student or program doesn't exist)\n- Status Code: 409 Conflict (email already exists)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Student",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/students/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+						"v1",
+								"students",
+								"1"
+							]
+						},
+						"description": "Delete a student from the system.\n\n**HTTP Method:** DELETE\n**Path Parameter:** student_id\n\n**Expected Responses:**\n- Status Code: 200 OK (success)\n- Status Code: 404 Not Found (student doesn't exist)"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Error Examples",
+			"item": [
+				{
+					"name": "404 - Student Not Found",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/students/9999",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+						"v1",
+								"students",
+								"9999"
+							]
+						},
+						"description": "Example of a 404 Not Found error when requesting a non-existent student.\n\n**Expected Response:**\n- Status Code: 404 Not Found\n- Body: Error message"
+					},
+					"response": []
+				},
+				{
+					"name": "400 - Invalid Request Body",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"first_name\": \"Test\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/students",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+						"v1",
+								"students"
+							]
+						},
+						"description": "Example of a 400 Bad Request error due to missing required fields.\n\n**Expected Response:**\n- Status Code: 400 Bad Request\n- Body: Validation error details"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:5001",
+			"type": "string"
+		}
+	]
+}

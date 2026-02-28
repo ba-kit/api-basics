@@ -1,0 +1,553 @@
+openapi: 3.0.0
+info:
+  title: TAFE Student Management API
+  description: |
+    A RESTful API for managing students and programs at a TAFE university.
+    
+    This API demonstrates:
+    - HTTP methods (GET, POST, PUT, DELETE)
+    - RESTful resource design
+    - Nested JSON responses
+    - Proper status codes
+    - Error handling
+    - API versioning (v1)
+    
+    **Base URL:** `http://localhost:5001/api/v1`
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@tafe.edu.au
+
+servers:
+  - url: http://localhost:5001/api/v1
+    description: Development server (v1)
+
+tags:
+  - name: Health
+    description: API health check
+  - name: Programs
+    description: Program management endpoints
+  - name: Students
+    description: Student management endpoints
+
+paths:
+  /api/health:
+    get:
+      tags:
+        - Health
+      summary: Health check
+      description: Check if the API is running
+      responses:
+        '200':
+          description: API is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: healthy
+                  timestamp:
+                    type: string
+                    format: date-time
+                  service:
+                    type: string
+                    example: TAFE Student Management API
+
+  /programs:
+    get:
+      tags:
+        - Programs
+      summary: List all programs
+      description: Retrieve a list of all available programs with enrollment counts
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProgramWithCount'
+                  total:
+                    type: integer
+                    example: 10
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /programs/{program_id}:
+    get:
+      tags:
+        - Programs
+      summary: Get program details
+      description: Retrieve details of a specific program by ID
+      parameters:
+        - name: program_id
+          in: path
+          required: true
+          description: Program ID
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/ProgramWithCount'
+        '404':
+          description: Program not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /students:
+    get:
+      tags:
+        - Students
+      summary: List students
+      description: Retrieve a paginated list of students with optional filtering
+      parameters:
+        - name: program_id
+          in: query
+          description: Filter by program ID
+          schema:
+            type: integer
+            example: 1
+        - name: page
+          in: query
+          description: Page number
+          schema:
+            type: integer
+            default: 1
+            example: 1
+        - name: per_page
+          in: query
+          description: Items per page
+          schema:
+            type: integer
+            default: 10
+            example: 10
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/StudentSummary'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    post:
+      tags:
+        - Students
+      summary: Create a new student
+      description: Add a new student to the system
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentCreate'
+      responses:
+        '201':
+          description: Student created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Student created successfully
+                  data:
+                    $ref: '#/components/schemas/Student'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: Validation failed
+                  details:
+                    type: array
+                    items:
+                      type: string
+                    example: ["first_name is required", "email must be valid"]
+        '404':
+          description: Program not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Email already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /students/{student_id}:
+    get:
+      tags:
+        - Students
+      summary: Get student details
+      description: Retrieve detailed information about a student including their program (nested JSON)
+      parameters:
+        - name: student_id
+          in: path
+          required: true
+          description: Student ID (ACT001 format)
+          schema:
+            type: string
+            example: ACT001
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/StudentDetail'
+        '404':
+          description: Student not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      tags:
+        - Students
+      summary: Update student
+      description: Update an existing student's information
+      parameters:
+        - name: student_id
+          in: path
+          required: true
+          description: Student ID (ACT001 format)
+          schema:
+            type: string
+            example: ACT001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentUpdate'
+      responses:
+        '200':
+          description: Student updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Student updated successfully
+                  data:
+                    $ref: '#/components/schemas/Student'
+        '404':
+          description: Student or program not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Email already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      tags:
+        - Students
+      summary: Delete student
+      description: Remove a student from the system
+      parameters:
+        - name: student_id
+          in: path
+          required: true
+          description: Student ID (ACT001 format)
+          schema:
+            type: string
+            example: ACT001
+      responses:
+        '200':
+          description: Student deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Student deleted successfully
+        '404':
+          description: Student not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    Program:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        program_name:
+          type: string
+          example: Diploma of Software Development
+        program_code:
+          type: string
+          example: ICT50220
+        duration_years:
+          type: integer
+          example: 2
+
+    ProgramWithCount:
+      allOf:
+        - $ref: '#/components/schemas/Program'
+        - type: object
+          properties:
+            enrolled_students:
+              type: integer
+              example: 5
+
+    Student:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        first_name:
+          type: string
+          example: Emma
+        last_name:
+          type: string
+          example: Smith
+        email:
+          type: string
+          format: email
+          example: emma.smith@student.tafe.edu.au
+        enrollment_date:
+          type: string
+          format: date
+          example: "2024-02-15"
+        program_id:
+          type: integer
+          example: 2
+
+    StudentSummary:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        first_name:
+          type: string
+          example: Emma
+        last_name:
+          type: string
+          example: Smith
+        full_name:
+          type: string
+          example: Emma Smith
+        email:
+          type: string
+          format: email
+          example: emma.smith@student.tafe.edu.au
+        enrollment_date:
+          type: string
+          format: date
+          example: "2024-02-15"
+        program_name:
+          type: string
+          example: Diploma of Software Development
+
+    StudentDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        first_name:
+          type: string
+          example: Emma
+        last_name:
+          type: string
+          example: Smith
+        full_name:
+          type: string
+          example: Emma Smith
+        email:
+          type: string
+          format: email
+          example: emma.smith@student.tafe.edu.au
+        enrollment_date:
+          type: string
+          format: date
+          example: "2024-02-15"
+        program:
+          $ref: '#/components/schemas/Program'
+
+    StudentCreate:
+      type: object
+      required:
+        - first_name
+        - last_name
+        - email
+        - program_id
+      properties:
+        first_name:
+          type: string
+          example: John
+        last_name:
+          type: string
+          example: Doe
+        email:
+          type: string
+          format: email
+          example: john.doe@student.tafe.edu.au
+        enrollment_date:
+          type: string
+          format: date
+          example: "2024-02-26"
+        program_id:
+          type: integer
+          example: 2
+
+    StudentUpdate:
+      type: object
+      properties:
+        first_name:
+          type: string
+          example: John
+        last_name:
+          type: string
+          example: Doe
+        email:
+          type: string
+          format: email
+          example: john.doe@student.tafe.edu.au
+        enrollment_date:
+          type: string
+          format: date
+          example: "2024-02-26"
+        program_id:
+          type: integer
+          example: 2
+
+    Pagination:
+      type: object
+      properties:
+        total:
+          type: integer
+          example: 20
+        page:
+          type: integer
+          example: 1
+        per_page:
+          type: integer
+          example: 10
+        total_pages:
+          type: integer
+          example: 2
+
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          example: Error message
