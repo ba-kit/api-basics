@@ -221,9 +221,9 @@
 	"variable": [
 		{
 			"key": "base_url",
-			"value": "http://localhost:5001",
+			"value": "https://tafe-student-api.fly.dev",
 			"type": "string",
-			"description": "Switch to https://tafe-student-api.fly.dev for live API"
+			"description": "Live API. Change to http://localhost:5001 for local development."
 		},
 		{
 			"key": "student_id",
