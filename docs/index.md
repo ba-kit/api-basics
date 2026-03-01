@@ -97,12 +97,12 @@ You (in Postman)  <---[Response]----  Server (API)
 
 **Example: Getting Student Details**
 ```http
-GET /api/students/1 HTTP/1.1
+GET /api/v1/students/ACT001 HTTP/1.1
 Host: localhost:5001
 Accept: application/json
 ```
 
-**In plain English:** "Show me the student with ID 1, and give me the data in JSON format."
+**In plain English:** "Show me the student with ID ACT001, and give me the data in JSON format."
 
 ### The Four Main API Operations
 
@@ -132,7 +132,7 @@ Accept: application/json
 **Modern APIs (REST) use clean JSON:**
 ```json
 {
-  "id": 1,
+  "id": "ACT001",
   "first_name": "Emma",
   "last_name": "Smith"
 }
@@ -163,32 +163,32 @@ Accept: application/json
 
 **Getting Collections vs. Individual Items:**
 ```
-/api/students          → All students (list)
-/api/students/1        → One specific student (ID 1)
-/api/programs          → All programs
-/api/programs/2        → One specific program (ID 2)
+/api/v1/students            → All students (list)
+/api/v1/students/ACT001     → One specific student (ID ACT001)
+/api/v1/programs            → All programs
+/api/v1/programs/2          → One specific program (ID 2)
 ```
 
 ### Two Types of Parameters
 
 **Path Parameters (to get a specific item):**
 ```
-GET /api/students/1
+GET /api/v1/students/ACT001
 ```
-*Translation: "Get me student #1"*
+*Translation: "Get me student ACT001"*
 
-**Query Parameters (to filter, sort, or page through lists):**
+**Query Parameters (to page through lists):**
 ```
-GET /api/students?program_id=2&page=1&per_page=10
+GET /api/v1/students?page=1&per_page=10
 ```
-*Translation: "Get students from program 2, show page 1, 10 students per page"*
+*Translation: "Get students, show page 1, 10 students per page"*
 
 ### Understanding Nested Data
 
 **Real Example from Our Student API:**
 ```json
 {
-  "id": 1,
+  "id": "ACT001",
   "first_name": "Emma",
   "last_name": "Smith",
   "full_name": "Emma Smith",
@@ -213,27 +213,16 @@ GET /api/students?program_id=2&page=1&per_page=10
 
 ### Working with Lists of Data
 
-**Program with All Its Students:**
+**Program from Our API:**
 ```json
 {
   "id": 2,
-  "program_name": "Diploma of Software Development",
-  "enrolled_students": [
-    {
-      "id": 1,
-      "first_name": "Emma",
-      "last_name": "Smith",
-      "email": "emma.smith@student.tafe.edu.au"
-    },
-    {
-      "id": 3,
-      "first_name": "James",
-      "last_name": "Wilson",
-      "email": "james.wilson@student.tafe.edu.au"
-    }
-  ]
+  "program_code": "ICT50220",
+  "duration_years": 2
 }
 ```
+
+**To get students in a program, use the students list and check `program_name` in the response.**
 
 **Questions to Ask When Writing Requirements:**
 - Which student fields do we need to display?
@@ -255,11 +244,11 @@ Swagger is an interactive documentation tool that shows you exactly how an API w
 
 **1. API Endpoints:**
 ```
-GET /api/students/{id}
+GET /api/v1/students/{id}
 ```
 - **GET** = What operation you can perform
-- **/api/students/{id}** = Where to find the data
-- **{id}** = You need to provide a student ID
+- **/api/v1/students/{id}** = Where to find the data
+- **{id}** = You need to provide a student ID (e.g. ACT001)
 
 **2. Request Information:**
 - **Path Parameters:** Required information (like student ID)
@@ -351,7 +340,7 @@ Postman is a tool that lets you test APIs without writing any code. It's like a 
 ### Try These Exercises
 
 **Exercise 1: Find Specific Information**
-1. Get student with ID 5
+1. Get student with ID ACT005
 2. Find their program name
 3. Locate their enrollment date
 4. Note any fields that are empty or missing
@@ -362,11 +351,11 @@ Postman is a tool that lets you test APIs without writing any code. It's like a 
 3. Read the specific error messages
 4. Fix the error and try again
 
-**Exercise 3: Filter and Paginate**
-1. Get all students in program 2
-2. Use: `?program_id=2`
-3. Count how many results you get
-4. Try pagination: `?page=1&per_page=5`
+**Exercise 3: Paginate Results**
+1. Get the first page of students: `GET /api/v1/students?page=1&per_page=5`
+2. Count how many results you get
+3. Get the second page: `?page=2&per_page=5`
+4. Check the `pagination.total` field to see the full count
 
 ### What You'll Learn
 
@@ -418,18 +407,18 @@ Sometimes the data from an API needs to be changed before it can be displayed to
 
 **Scenario 3: Filtering Data**
 ```json
-// What the API gives you (all students):
+// What the API gives you (paginated list):
 [
-  {"id": 1, "program_id": 2, "first_name": "Emma"},
-  {"id": 2, "program_id": 3, "first_name": "John"},
-  {"id": 3, "program_id": 2, "first_name": "James"}
+  {"id": "ACT001", "program_name": "Diploma of Software Development", "first_name": "Emma"},
+  {"id": "ACT002", "program_name": "Certificate IV in IT", "first_name": "John"},
+  {"id": "ACT003", "program_name": "Diploma of Software Development", "first_name": "James"}
 ]
 
-// What users should see (only Program 2):
+// What users should see (only Software Development students):
 Emma Smith, James Wilson
 ```
 
-**Your Requirement:** "Filter students to show only those in Program 2"
+**Your Requirement:** "Filter the displayed list to show only students where program_name equals 'Diploma of Software Development'"
 
 ### Writing Better Requirements
 
@@ -437,7 +426,7 @@ Emma Smith, James Wilson
 > "Display student details"
 
 **Write this detailed requirement:**
-> **Endpoint:** GET /api/students/{id}
+> **Endpoint:** GET /api/v1/students/{id}
 > **Method:** GET
 > **Fields to Display:**
 > - Full Name (combine first_name + last_name)
