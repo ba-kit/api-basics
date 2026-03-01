@@ -52,11 +52,11 @@
 							{"key": "Accept", "value": "application/json", "type": "text"}
 						],
 						"url": {
-							"raw": "{{base_url}}/api/v1/programs/1",
+							"raw": "{{base_url}}/api/v1/programs/{{program_id}}",
 							"host": ["{{base_url}}"],
-							"path": ["api", "v1", "programs", "1"]
+							"path": ["api", "v1", "programs", "{{program_id}}"]
 						},
-						"description": "Get a specific program by integer ID.\n\n**Expected:** 200 OK or 404 Not Found"
+						"description": "Get a program by its primary key ID.\n\n`{{program_id}}` is auto-set from the student's `program.id` when you run Get Student Details.\n\n**Expected:** 200 OK or 404 Not Found"
 					},
 					"response": []
 				}
@@ -97,7 +97,7 @@
 							"host": ["{{base_url}}"],
 							"path": ["api", "v1", "students", "{{student_id}}"]
 						},
-						"description": "Returns full student with nested program object.\n\nUses `{{student_id}}` variable (default ACT001). After running, `{{program_id}}` is auto-set from the response for use in Get Program by ID.\n\n**Expected:** 200 OK with student + program nested, or 404 Not Found"
+						"description": "Returns full student with nested program object.\n\nUses `{{student_id}}` variable (default ACT001). Captures `data.program.id` into `{{program_id}}` — run Get Program by ID next to look up that program.\n\n**Expected:** 200 OK with student + program nested, or 404 Not Found"
 					},
 					"event": [
 						{
@@ -249,7 +249,7 @@
 			"key": "program_id",
 			"value": "1",
 			"type": "string",
-			"description": "Auto-set after Get Student Details. Change manually to look up a specific program."
+			"description": "Auto-set from student's program.id after Get Student Details."
 		}
 	]
 }

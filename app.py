@@ -75,10 +75,10 @@ def get_programs():
             'error': str(e)
         }), 500
 
-@v1_bp.route('/programs/<int:program_id>', methods=['GET'])
-def get_program(program_id):
+@v1_bp.route('/programs/<string:program_code>', methods=['GET'])
+def get_program(program_code):
     try:
-        program = get_program_service().get_program_by_id(program_id)
+        program = get_program_service().get_program_by_code(program_code)
         
         if not program:
             return jsonify({
@@ -168,7 +168,7 @@ def create_student():
             data['first_name'],
             data['last_name'],
             data['email'],
-            data['program_id'],
+            data['program_code'],
             data.get('enrollment_date')
         )
         
@@ -213,7 +213,7 @@ def update_student(student_id):
             data.get('last_name'),
             data.get('email'),
             data.get('enrollment_date'),
-            data.get('program_id')
+            data.get('program_code')
         )
         
         if not student:

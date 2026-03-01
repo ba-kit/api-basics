@@ -14,23 +14,22 @@ class ProgramService:
         result = []
         for program in programs:
             result.append({
-                'id': program['id'],
                 'program_code': program['program_code'],
+                'program_name': program['program_name'],
                 'duration_years': program['duration_years']
             })
         
         return result
     
-    def get_program_by_id(self, program_id):
-        """Get a program by ID"""
-        program = self.program_repo.get_by_id(program_id)
+    def get_program_by_code(self, program_code):
+        """Get a program by program_code"""
+        program = self.program_repo.get_by_code(program_code)
         
         if not program:
             return None
         
         return {
-            'id': program['id'],
-            'program_name': program['program_name'],
             'program_code': program['program_code'],
+            'program_name': program['program_name'],
             'duration_years': program['duration_years']
         }

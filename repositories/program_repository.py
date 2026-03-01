@@ -5,16 +5,16 @@ class ProgramRepository(BaseRepository):
     
     def get_all(self):
         """Get all programs"""
-        query = 'SELECT id, program_code, duration_years FROM programs ORDER BY program_code'
+        query = 'SELECT program_code, program_name, duration_years FROM programs ORDER BY program_code'
         return self.execute_query(query)
     
-    def get_by_id(self, program_id):
-        """Get a program by ID"""
-        query = 'SELECT * FROM programs WHERE id = ?'
-        return self.execute_one(query, (program_id,))
+    def get_by_code(self, program_code):
+        """Get a program by program_code"""
+        query = 'SELECT program_code, program_name, duration_years FROM programs WHERE program_code = ?'
+        return self.execute_one(query, (program_code,))
     
-    def exists(self, program_id):
+    def exists(self, program_code):
         """Check if a program exists"""
-        query = 'SELECT id FROM programs WHERE id = ?'
-        result = self.execute_one(query, (program_id,))
+        query = 'SELECT program_code FROM programs WHERE program_code = ?'
+        result = self.execute_one(query, (program_code,))
         return result is not None

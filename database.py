@@ -21,9 +21,8 @@ def init_database():
     
     cursor.execute('''
         CREATE TABLE programs (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            program_code TEXT PRIMARY KEY,
             program_name TEXT NOT NULL,
-            program_code TEXT NOT NULL UNIQUE,
             duration_years INTEGER NOT NULL
         )
     ''')
@@ -35,8 +34,8 @@ def init_database():
             last_name TEXT NOT NULL,
             email TEXT NOT NULL UNIQUE,
             enrollment_date TEXT NOT NULL,
-            program_id INTEGER NOT NULL,
-            FOREIGN KEY (program_id) REFERENCES programs (id)
+            program_code TEXT NOT NULL,
+            FOREIGN KEY (program_code) REFERENCES programs (program_code)
         )
     ''')
     
@@ -52,20 +51,22 @@ def seed_data():
     cursor = conn.cursor()
     
     programs = [
-        ('Certificate IV in Information Technology', 'ICT40120', 1),
-        ('Diploma of Software Development', 'ICT50220', 2),
-        ('Advanced Diploma of Network Security', 'ICT60220', 2),
-        ('Certificate III in Business', 'BSB30120', 1),
-        ('Diploma of Project Management', 'BSB50820', 2),
-        ('Certificate IV in Design', 'CUA40720', 1),
-        ('Diploma of Graphic Design', 'CUA50720', 2),
-        ('Certificate IV in Accounting and Bookkeeping', 'FNS40217', 1),
-        ('Diploma of Leadership and Management', 'BSB50420', 2),
-        ('Advanced Diploma of Engineering Technology', 'MEM60212', 3)
+        ('ICT40120', 'Certificate IV in Information Technology', 1),
+        ('ICT50220', 'Diploma of Software Development', 2),
+        ('ICT60220', 'Advanced Diploma of Network Security', 2),
+        ('BSB30120', 'Certificate III in Business', 1),
+        ('BSB50820', 'Diploma of Project Management', 2),
+        ('CUA40720', 'Certificate IV in Design', 1),
+        ('CUA50720', 'Diploma of Graphic Design', 2),
+        ('FNS40217', 'Certificate IV in Accounting and Bookkeeping', 1),
+        ('BSB50420', 'Diploma of Leadership and Management', 2),
+        ('MEM60212', 'Advanced Diploma of Engineering Technology', 3)
     ]
     
+    program_codes = [p[0] for p in programs]
+    
     cursor.executemany(
-        'INSERT INTO programs (program_name, program_code, duration_years) VALUES (?, ?, ?)',
+        'INSERT INTO programs (program_code, program_name, duration_years) VALUES (?, ?, ?)',
         programs
     )
     
@@ -83,13 +84,13 @@ def seed_data():
         last_name = last_names[i]
         email = f"{first_name.lower()}.{last_name.lower()}@student.tafe.edu.au"
         enrollment_date = (base_date + timedelta(days=random.randint(0, 365))).strftime('%Y-%m-%d')
-        program_id = random.randint(1, 10)
+        program_code = random.choice(program_codes)
         student_id = f"ACT{(i+1):03d}"
         
-        students.append((student_id, first_name, last_name, email, enrollment_date, program_id))
+        students.append((student_id, first_name, last_name, email, enrollment_date, program_code))
     
     cursor.executemany(
-        'INSERT INTO students (id, first_name, last_name, email, enrollment_date, program_id) VALUES (?, ?, ?, ?, ?, ?)',
+        'INSERT INTO students (id, first_name, last_name, email, enrollment_date, program_code) VALUES (?, ?, ?, ?, ?, ?)',
         students
     )
     

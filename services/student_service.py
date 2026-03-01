@@ -25,6 +25,7 @@ class StudentService:
                 'full_name': f"{student['first_name']} {student['last_name']}",
                 'email': student['email'],
                 'enrollment_date': student['enrollment_date'],
+                'program_code': student['program_code'],
                 'program_name': student['program_name']
             })
         
@@ -51,17 +52,16 @@ class StudentService:
             'email': student['email'],
             'enrollment_date': student['enrollment_date'],
             'program': {
-                'id': student['program_id'],
-                'program_name': student['program_name'],
                 'program_code': student['program_code'],
+                'program_name': student['program_name'],
                 'duration_years': student['duration_years']
             }
         }
     
-    def create_student(self, first_name, last_name, email, program_id, enrollment_date=None):
+    def create_student(self, first_name, last_name, email, program_code, enrollment_date=None):
         """Create a new student"""
         # Validate program exists
-        if not self.program_repo.exists(program_id):
+        if not self.program_repo.exists(program_code):
             raise ValueError('Program not found')
         
         # Generate student ID
@@ -72,7 +72,7 @@ class StudentService:
             enrollment_date = datetime.now().strftime('%Y-%m-%d')
         
         # Create student
-        self.student_repo.create(student_id, first_name, last_name, email, enrollment_date, program_id)
+        self.student_repo.create(student_id, first_name, last_name, email, enrollment_date, program_code)
         
         return {
             'id': student_id,
@@ -80,21 +80,21 @@ class StudentService:
             'last_name': last_name,
             'email': email,
             'enrollment_date': enrollment_date,
-            'program_id': program_id
+            'program_code': program_code
         }
     
-    def update_student(self, student_id, first_name=None, last_name=None, email=None, enrollment_date=None, program_id=None):
+    def update_student(self, student_id, first_name=None, last_name=None, email=None, enrollment_date=None, program_code=None):
         """Update a student"""
         # Check if student exists
         if not self.student_repo.exists(student_id):
             return None
         
         # Validate program if provided
-        if program_id and not self.program_repo.exists(program_id):
+        if program_code and not self.program_repo.exists(program_code):
             raise ValueError('Program not found')
         
         # Update student
-        self.student_repo.update(student_id, first_name, last_name, email, enrollment_date, program_id)
+        self.student_repo.update(student_id, first_name, last_name, email, enrollment_date, program_code)
         
         # Return updated student
         return self.get_student_by_id(student_id)
@@ -117,7 +117,7 @@ class StudentService:
             errors.append('last_name is required')
         if not data.get('email'):
             errors.append('email is required')
-        if not data.get('program_id'):
-            errors.append('program_id is required')
+        if not data.get('program_code'):
+            errors.append('program_code is required')
         
         return errors

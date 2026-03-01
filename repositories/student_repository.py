@@ -6,9 +6,9 @@ class StudentRepository(BaseRepository):
     def get_all(self, limit=None, offset=None):
         """Get all students with optional pagination"""
         query = '''
-            SELECT s.*, p.program_name, p.program_code, p.duration_years
+            SELECT s.*, p.program_name, p.duration_years
             FROM students s
-            JOIN programs p ON s.program_id = p.id
+            JOIN programs p ON s.program_code = p.program_code
             ORDER BY s.id
         '''
         
@@ -22,9 +22,9 @@ class StudentRepository(BaseRepository):
     def get_by_id(self, student_id):
         """Get a student by ID"""
         query = '''
-            SELECT s.*, p.id as program_id, p.program_name, p.program_code, p.duration_years
+            SELECT s.*, p.program_name, p.duration_years
             FROM students s
-            JOIN programs p ON s.program_id = p.id
+            JOIN programs p ON s.program_code = p.program_code
             WHERE s.id = ?
         '''
         return self.execute_one(query, (student_id,))
@@ -35,16 +35,16 @@ class StudentRepository(BaseRepository):
         result = self.execute_one(query)
         return result['count'] if result else 0
     
-    def create(self, student_id, first_name, last_name, email, enrollment_date, program_id):
+    def create(self, student_id, first_name, last_name, email, enrollment_date, program_code):
         """Create a new student"""
         query = '''
-            INSERT INTO students (id, first_name, last_name, email, enrollment_date, program_id)
+            INSERT INTO students (id, first_name, last_name, email, enrollment_date, program_code)
             VALUES (?, ?, ?, ?, ?, ?)
         '''
-        self.execute_write(query, (student_id, first_name, last_name, email, enrollment_date, program_id))
+        self.execute_write(query, (student_id, first_name, last_name, email, enrollment_date, program_code))
         return student_id
     
-    def update(self, student_id, first_name=None, last_name=None, email=None, enrollment_date=None, program_id=None):
+    def update(self, student_id, first_name=None, last_name=None, email=None, enrollment_date=None, program_code=None):
         """Update a student"""
         updates = []
         params = []
@@ -61,9 +61,9 @@ class StudentRepository(BaseRepository):
         if enrollment_date:
             updates.append('enrollment_date = ?')
             params.append(enrollment_date)
-        if program_id:
-            updates.append('program_id = ?')
-            params.append(program_id)
+        if program_code:
+            updates.append('program_code = ?')
+            params.append(program_code)
         
         if not updates:
             return False
