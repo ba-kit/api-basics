@@ -19,10 +19,10 @@ info:
     email: support@tafe.edu.au
 
 servers:
-  - url: https://tafe-student-api.fly.dev/api/v1
-    description: Live server (v1)
-  - url: http://localhost:5001/api/v1
-    description: Local development server (v1)
+  - url: https://tafe-student-api.fly.dev
+    description: Live server
+  - url: http://localhost:5001
+    description: Local development server
 
 tags:
   - name: Health
@@ -57,7 +57,7 @@ paths:
                     type: string
                     example: TAFE Student Management API
 
-  /programs:
+  /api/v1/programs:
     get:
       tags:
         - Programs
@@ -88,7 +88,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-  /programs/{program_code}:
+  /api/v1/programs/{program_code}:
     get:
       tags:
         - Programs
@@ -128,7 +128,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-  /students:
+  /api/v1/students:
     get:
       tags:
         - Students
@@ -237,7 +237,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-  /students/{student_id}:
+  /api/v1/students/{student_id}:
     get:
       tags:
         - Students
