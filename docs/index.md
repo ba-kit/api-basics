@@ -60,18 +60,19 @@ Our API uses a simple SQLite database with two main tables:
 │                        TAFE Student Database                     │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  ┌─────────────────┐         ┌─────────────────────────────────┐ │
-│  │    programs     │         │           students               │ │
-│  ├─────────────────┤         ├─────────────────────────────────┤ │
-│  │ id (INTEGER)    │◄─────────┤ program_id (INTEGER)            │ │
-│  │ program_name    │         │ id (TEXT) - ACT001, ACT002...   │ │
-│  │ program_code    │         │ first_name                      │ │
-│  │ duration_years  │         │ last_name                       │ │
-│  └─────────────────┘         │ email                           │ │
+│  ┌──────────────────────┐    ┌─────────────────────────────────┐ │
+│  │       programs       │    │           students               │ │
+│  ├──────────────────────┤    ├─────────────────────────────────┤ │
+│  │ program_code (TEXT)  │◄───┤ program_code (TEXT)             │ │
+│  │   PRIMARY KEY        │    │ id (TEXT) - ACT001, ACT002...   │ │
+│  │ program_name         │    │ first_name                      │ │
+│  │ duration_years       │    │ last_name                       │ │
+│  └──────────────────────┘    │ email                           │ │
 │                              │ enrollment_date                 │ │
 │                              └─────────────────────────────────┘ │
 │                                                                 │
 │  Relationship: Many students belong to one program              │
+│  Program key: String code (ICT40120, BSB50820, etc.)            │
 │  Student IDs: String format (ACT001, ACT002, etc.)              │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -168,10 +169,10 @@ Accept: application/json
 
 **Getting Collections vs. Individual Items:**
 ```
-/api/v1/students            → All students (list)
-/api/v1/students/ACT001     → One specific student (ID ACT001)
-/api/v1/programs            → All programs
-/api/v1/programs/2          → One specific program (ID 2)
+/api/v1/students                  → All students (list)
+/api/v1/students/ACT001           → One specific student (ID ACT001)
+/api/v1/programs                  → All programs
+/api/v1/programs/ICT40120         → One specific program (code ICT40120)
 ```
 
 ### Two Types of Parameters
@@ -200,9 +201,8 @@ GET /api/v1/students?page=1&per_page=10
   "email": "emma.smith@student.tafe.edu.au",
   "enrollment_date": "2024-02-15",
   "program": {
-    "id": 2,
-    "program_name": "Diploma of Software Development",
     "program_code": "ICT50220",
+    "program_name": "Diploma of Software Development",
     "duration_years": 2
   }
 }
@@ -221,11 +221,13 @@ GET /api/v1/students?page=1&per_page=10
 **Program from Our API:**
 ```json
 {
-  "id": 2,
   "program_code": "ICT50220",
+  "program_name": "Diploma of Software Development",
   "duration_years": 2
 }
 ```
+
+**Note:** `program_code` is the primary key — use it to look up a specific program (`GET /api/v1/programs/ICT50220`).
 
 **To get students in a program, use the students list and check `program_name` in the response.**
 
@@ -287,7 +289,7 @@ required:
   - first_name
   - last_name  
   - email
-  - program_id
+  - program_code
 properties:
   first_name:
     type: string
@@ -296,15 +298,15 @@ properties:
     type: string
     format: email
     example: john.doe@student.tafe.edu.au
-  program_id:
-    type: integer
-    example: 2
+  program_code:
+    type: string
+    example: ICT40120
 ```
 
 **Business Requirements You Should Write:**
 - "First name is required and must be text"
 - "Email is required and must be a valid email format"
-- "Program must be selected from existing programs"
+- "Program must be selected from existing programs (use program_code e.g. ICT40120)"
 - "All fields must be validated before submission"
 - "Show specific error messages for each invalid field"
 
@@ -336,8 +338,8 @@ Postman is a tool that lets you test APIs without writing any code. It's like a 
 ### Working with Different Environments
 
 **Environment Variables** help you switch between different servers:
-- **Development:** `http://localhost:5001` (our training server)
-- **Testing:** `http://test-api.company.com` (company test server)
+- **Live (default):** `https://tafe-student-api.fly.dev` (deployed training server)
+- **Local:** `http://localhost:5001` (run `python app.py` locally)
 - **Production:** `http://api.company.com` (live server)
 
 **How it works:** Change the `base_url` variable and all your requests automatically use the new server.
@@ -489,7 +491,8 @@ Use this template for all API features:
 ### Reference Materials
 - **HTTP Basics:** `docs/http_basics.md` - Complete HTTP reference guide
 - **REST Principles:** `docs/rest_principles.md` - REST design patterns
-- **Live API Documentation:** http://localhost:5001/api/docs - Interactive Swagger UI
+- **Live API Documentation:** https://tafe-student-api.fly.dev/api/docs - Interactive Swagger UI
+- **Local API Documentation:** http://localhost:5001/api/docs - Run locally with `python app.py`
 - **Postman Collection:** `postman/TAFE_Student_API.postman_collection.json` - Ready-to-use requests
 
 ### Quick Reference
