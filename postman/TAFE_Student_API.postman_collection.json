@@ -93,12 +93,26 @@
 							{"key": "Accept", "value": "application/json", "type": "text"}
 						],
 						"url": {
-							"raw": "{{base_url}}/api/v1/students/ACT001",
+							"raw": "{{base_url}}/api/v1/students/{{student_id}}",
 							"host": ["{{base_url}}"],
-							"path": ["api", "v1", "students", "ACT001"]
+							"path": ["api", "v1", "students", "{{student_id}}"]
 						},
-						"description": "Returns full student with nested program object.\n\nStudent IDs use format: ACT001, ACT002, etc.\n\n**Expected:** 200 OK with student + program nested, or 404 Not Found"
+						"description": "Returns full student with nested program object.\n\nUses `{{student_id}}` variable (default ACT001). After running, `{{program_id}}` is auto-set from the response for use in Get Program by ID.\n\n**Expected:** 200 OK with student + program nested, or 404 Not Found"
 					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = pm.response.json();",
+									"if (json.data && json.data.program && json.data.program.id) {",
+									"    pm.collectionVariables.set('program_id', json.data.program.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"response": []
 				},
 				{
@@ -119,8 +133,22 @@
 							"host": ["{{base_url}}"],
 							"path": ["api", "v1", "students"]
 						},
-						"description": "Create a new student. ID is auto-generated (ACT021, ACT022...).\n\n**Required fields:** first_name, last_name, email, program_id\n**Optional:** enrollment_date (defaults to today)\n\n**Expected:** 201 Created | 400 Bad Request | 409 Conflict (duplicate email)"
+						"description": "Create a new student. ID is auto-generated (ACT021, ACT022...).\n\nAfter running, `{{student_id}}` is auto-set from the response — Update and Delete will use it automatically.\n\n**Required fields:** first_name, last_name, email, program_id\n**Optional:** enrollment_date (defaults to today)\n\n**Expected:** 201 Created | 400 Bad Request | 409 Conflict (duplicate email)"
 					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = pm.response.json();",
+									"if (json.data && json.data.id) {",
+									"    pm.collectionVariables.set('student_id', json.data.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"response": []
 				},
 				{
@@ -137,11 +165,11 @@
 							"options": {"raw": {"language": "json"}}
 						},
 						"url": {
-							"raw": "{{base_url}}/api/v1/students/ACT001",
+							"raw": "{{base_url}}/api/v1/students/{{student_id}}",
 							"host": ["{{base_url}}"],
-							"path": ["api", "v1", "students", "ACT001"]
+							"path": ["api", "v1", "students", "{{student_id}}"]
 						},
-						"description": "Update an existing student. All fields optional — only provided fields updated.\n\n**Expected:** 200 OK | 404 Not Found | 409 Conflict"
+						"description": "Update an existing student. Uses `{{student_id}}` — run Create first to auto-set it, or set manually.\n\nAll fields optional — only provided fields updated.\n\n**Expected:** 200 OK | 404 Not Found | 409 Conflict"
 					},
 					"response": []
 				},
@@ -153,11 +181,11 @@
 							{"key": "Accept", "value": "application/json", "type": "text"}
 						],
 						"url": {
-							"raw": "{{base_url}}/api/v1/students/ACT001",
+							"raw": "{{base_url}}/api/v1/students/{{student_id}}",
 							"host": ["{{base_url}}"],
-							"path": ["api", "v1", "students", "ACT001"]
+							"path": ["api", "v1", "students", "{{student_id}}"]
 						},
-						"description": "Delete a student by ID.\n\n**Expected:** 200 OK | 404 Not Found"
+						"description": "Delete a student by ID. Uses `{{student_id}}` — run Create first to auto-set it, or set manually.\n\n**Expected:** 200 OK | 404 Not Found"
 					},
 					"response": []
 				}
@@ -210,6 +238,18 @@
 			"value": "http://localhost:5001",
 			"type": "string",
 			"description": "Switch to https://tafe-student-api.fly.dev for live API"
+		},
+		{
+			"key": "student_id",
+			"value": "ACT001",
+			"type": "string",
+			"description": "Auto-set after Create New Student. Change manually to target a specific student."
+		},
+		{
+			"key": "program_id",
+			"value": "1",
+			"type": "string",
+			"description": "Auto-set after Get Student Details. Change manually to look up a specific program."
 		}
 	]
 }
