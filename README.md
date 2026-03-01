@@ -120,60 +120,6 @@ Student IDs use the format `ACT001`, `ACT002`, etc.
 | 409 | Duplicate email |
 | 500 | Server error |
 
-## 🔑 Git SSH Setup (New GitHub Account)
-
-### 1. Generate SSH key
-```bash
-ssh-keygen -t ed25519 -C "your_email@example.com" -f ~/.ssh/id_ed25519_tafe
-```
-
-### 2. Add key to SSH agent
-```bash
-eval "$(ssh-agent -s)"
-ssh-add ~/.ssh/id_ed25519_tafe
-```
-
-### 3. Add public key to GitHub
-```bash
-cat ~/.ssh/id_ed25519_tafe.pub
-# Copy output → GitHub → Settings → SSH and GPG keys → New SSH key
-```
-
-### 4. Configure SSH for multiple accounts (`~/.ssh/config`)
-```
-Host github-tafe
-  HostName github.com
-  User git
-  IdentityFile ~/.ssh/id_ed25519_tafe
-
-Host github.com
-  HostName github.com
-  User git
-  IdentityFile ~/.ssh/id_ed25519
-```
-
-### 5. Test the connection
-```bash
-ssh -T git@github-tafe
-# Expected: Hi USERNAME! You've successfully authenticated...
-```
-
-### 6. Initialize and push this repo
-```bash
-git init
-git config user.name "Your Name"
-git config user.email "your_email@example.com"
-git add .
-git commit -m "Initial commit: TAFE Student Management API v1"
-git remote add origin git@github-tafe:YOUR_USERNAME/tafe-student-api.git
-git branch -M main
-git push -u origin main
-```
-
-### 7. Enable GitHub Pages
-Repository → Settings → Pages → Source: `main` branch, `/docs` folder.
-KT session will be published at `https://YOUR_USERNAME.github.io/tafe-student-api/`
-
 ## 🐳 Fly.io Deployment
 
 ```bash
