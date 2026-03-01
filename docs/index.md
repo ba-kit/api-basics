@@ -1,3 +1,8 @@
+---
+layout: default
+title: API Integration Guide for Business Analysts
+---
+
 # API Integration Guide for Business Analysts
 
 **Welcome to your API training session!** This guide will help you understand how APIs work from a business perspective, enabling you to write better requirements and communicate more effectively with technical teams.
