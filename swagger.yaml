@@ -12,15 +12,17 @@ info:
     - Error handling
     - API versioning (v1)
     
-    **Base URL:** `http://localhost:5001/api/v1`
+    **Base URL:** `https://tafe-student-api.fly.dev/api/v1`
   version: 1.0.0
   contact:
     name: API Support
     email: support@tafe.edu.au
 
 servers:
+  - url: https://tafe-student-api.fly.dev/api/v1
+    description: Live server (v1)
   - url: http://localhost:5001/api/v1
-    description: Development server (v1)
+    description: Local development server (v1)
 
 tags:
   - name: Health
@@ -86,20 +88,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-  /programs/{program_id}:
+  /programs/{program_code}:
     get:
       tags:
         - Programs
       summary: Get program details
-      description: Retrieve details of a specific program by ID
+      description: Retrieve details of a specific program by program code
       parameters:
-        - name: program_id
+        - name: program_code
           in: path
           required: true
-          description: Program ID
+          description: Program code (primary key)
           schema:
-            type: integer
-            example: 1
+            type: string
+            example: ICT40120
       responses:
         '200':
           description: Successful response
@@ -133,12 +135,6 @@ paths:
       summary: List students
       description: Retrieve a paginated list of students with optional filtering
       parameters:
-        - name: program_id
-          in: query
-          description: Filter by program ID
-          schema:
-            type: integer
-            example: 1
         - name: page
           in: query
           description: Page number
@@ -380,15 +376,12 @@ components:
     Program:
       type: object
       properties:
-        id:
-          type: integer
-          example: 1
-        program_name:
-          type: string
-          example: Diploma of Software Development
         program_code:
           type: string
           example: ICT50220
+        program_name:
+          type: string
+          example: Diploma of Software Development
         duration_years:
           type: integer
           example: 2
@@ -406,8 +399,8 @@ components:
       type: object
       properties:
         id:
-          type: integer
-          example: 1
+          type: string
+          example: ACT001
         first_name:
           type: string
           example: Emma
@@ -422,16 +415,16 @@ components:
           type: string
           format: date
           example: "2024-02-15"
-        program_id:
-          type: integer
-          example: 2
+        program_code:
+          type: string
+          example: ICT50220
 
     StudentSummary:
       type: object
       properties:
         id:
-          type: integer
-          example: 1
+          type: string
+          example: ACT001
         first_name:
           type: string
           example: Emma
@@ -457,8 +450,8 @@ components:
       type: object
       properties:
         id:
-          type: integer
-          example: 1
+          type: string
+          example: ACT001
         first_name:
           type: string
           example: Emma
@@ -485,7 +478,7 @@ components:
         - first_name
         - last_name
         - email
-        - program_id
+        - program_code
       properties:
         first_name:
           type: string
@@ -501,9 +494,9 @@ components:
           type: string
           format: date
           example: "2024-02-26"
-        program_id:
-          type: integer
-          example: 2
+        program_code:
+          type: string
+          example: ICT40120
 
     StudentUpdate:
       type: object
@@ -522,9 +515,9 @@ components:
           type: string
           format: date
           example: "2024-02-26"
-        program_id:
-          type: integer
-          example: 2
+        program_code:
+          type: string
+          example: ICT40120
 
     Pagination:
       type: object
