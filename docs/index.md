@@ -489,10 +489,9 @@ Use this template for all API features:
 ## Resources for Continued Learning
 
 ### Reference Materials
-- **HTTP Basics:** `docs/http_basics.md` - Complete HTTP reference guide
-- **REST Principles:** `docs/rest_principles.md` - REST design patterns
-- **Live API Documentation:** https://tafe-student-api.fly.dev/api/docs - Interactive Swagger UI
-- **Local API Documentation:** https://tafe-student-api.fly.dev/api/docs - Same as live (or http://localhost:5001/api/docs if running locally)
+- **[HTTP Basics Guide](http_basics.md)** - Complete HTTP reference guide
+- **[REST Principles Guide](rest_principles.md)** - REST design patterns and best practices
+- **[Live API Documentation](https://tafe-student-api.fly.dev/api/docs)** - Interactive Swagger UI
 - **Postman Collection:** `postman/TAFE_Student_API.postman_collection.json` - Ready-to-use requests
 
 ### Quick Reference
