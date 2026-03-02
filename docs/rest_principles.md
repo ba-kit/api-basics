@@ -45,7 +45,7 @@ Each request from client to server must contain all information needed to unders
 **Stateless Example:**
 ```http
 GET /api/students/1 HTTP/1.1
-Host: localhost:5000
+Host: tafe-student-api.fly.dev
 Accept: application/json
 ```
 
@@ -487,5 +487,5 @@ Good: Each request contains all needed information
 Now that you understand REST principles:
 1. Explore the [HTTP Basics Guide](http_basics.md) for more details on HTTP
 2. Try the API using Postman with the provided collection
-3. Review the Swagger documentation at `http://localhost:5000/api/docs`
+3. Review the Swagger documentation at `https://tafe-student-api.fly.dev/api/docs`
 4. Experiment with creating, reading, updating, and deleting students

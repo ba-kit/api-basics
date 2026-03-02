@@ -9,7 +9,8 @@ import json
 from datetime import datetime
 
 # Configuration
-BASE_URL = "http://localhost:5001"
+# Production URL (change to http://localhost:5001 for local development)
+BASE_URL = "https://tafe-student-api.fly.dev"
 API_BASE = f"{BASE_URL}/api/v1"
 
 def print_response(response, operation):

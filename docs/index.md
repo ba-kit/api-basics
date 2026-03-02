@@ -20,7 +20,7 @@ By the end of this session, you will be able to:
 
 ### Setup Your Environment
 
-1. **Open your browser to:** http://localhost:5001/api/docs (our API documentation)
+1. **Open your browser to:** https://tafe-student-api.fly.dev/api/docs (our API documentation)
 2. **Start the API server:** `python app.py`
 3. **Try the simple REST client:** `python simple_rest_client.py`
 4. **Download Postman** if not already installed: https://www.postman.com/downloads/
@@ -104,7 +104,7 @@ You (in Postman)  <---[Response]----  Server (API)
 **Example: Getting Student Details**
 ```http
 GET /api/v1/students/ACT001 HTTP/1.1
-Host: localhost:5001
+Host: tafe-student-api.fly.dev
 Accept: application/json
 ```
 
@@ -245,7 +245,7 @@ GET /api/v1/students?page=1&per_page=10
 
 Swagger is an interactive documentation tool that shows you exactly how an API works. Think of it as a user manual for APIs.
 
-**Open our API documentation:** http://localhost:5001/api/docs
+**Open our API documentation:** https://tafe-student-api.fly.dev/api/docs
 
 ### Understanding What You See
 
@@ -339,8 +339,8 @@ Postman is a tool that lets you test APIs without writing any code. It's like a 
 
 **Environment Variables** help you switch between different servers:
 - **Live (default):** `https://tafe-student-api.fly.dev` (deployed training server)
-- **Local:** `http://localhost:5001` (run `python app.py` locally)
-- **Production:** `http://api.company.com` (live server)
+- **Local:** `https://tafe-student-api.fly.dev` (same as live for this training)
+- **Production:** `http://api.company.com` (example production server)
 
 **How it works:** Change the `base_url` variable and all your requests automatically use the new server.
 
@@ -492,7 +492,7 @@ Use this template for all API features:
 - **HTTP Basics:** `docs/http_basics.md` - Complete HTTP reference guide
 - **REST Principles:** `docs/rest_principles.md` - REST design patterns
 - **Live API Documentation:** https://tafe-student-api.fly.dev/api/docs - Interactive Swagger UI
-- **Local API Documentation:** http://localhost:5001/api/docs - Run locally with `python app.py`
+- **Local API Documentation:** https://tafe-student-api.fly.dev/api/docs - Same as live (or http://localhost:5001/api/docs if running locally)
 - **Postman Collection:** `postman/TAFE_Student_API.postman_collection.json` - Ready-to-use requests
 
 ### Quick Reference

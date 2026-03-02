@@ -35,7 +35,7 @@ GET /api/students/1 HTTP/1.1
 Metadata about the request (key-value pairs).
 
 ```
-Host: localhost:5000
+Host: tafe-student-api.fly.dev
 Content-Type: application/json
 Accept: application/json
 User-Agent: PostmanRuntime/7.32.0
@@ -107,7 +107,7 @@ HTTP methods indicate the desired action to be performed on a resource.
 
 ```http
 GET /api/students HTTP/1.1
-Host: localhost:5000
+Host: tafe-student-api.fly.dev
 Accept: application/json
 ```
 
@@ -119,7 +119,7 @@ Accept: application/json
 
 ```http
 POST /api/students HTTP/1.1
-Host: localhost:5000
+Host: tafe-student-api.fly.dev
 Content-Type: application/json
 
 {
@@ -138,7 +138,7 @@ Content-Type: application/json
 
 ```http
 PUT /api/students/1 HTTP/1.1
-Host: localhost:5000
+Host: tafe-student-api.fly.dev
 Content-Type: application/json
 
 {
@@ -157,7 +157,7 @@ Content-Type: application/json
 
 ```http
 DELETE /api/students/1 HTTP/1.1
-Host: localhost:5000
+Host: tafe-student-api.fly.dev
 ```
 
 ### Other Methods (Not Used in This Demo)
@@ -234,7 +234,7 @@ Accept: application/json
 **Request:**
 ```http
 GET /api/students/1 HTTP/1.1
-Host: localhost:5000
+Host: tafe-student-api.fly.dev
 Accept: application/json
 ```
 
@@ -268,7 +268,7 @@ Content-Length: 312
 **Request:**
 ```http
 POST /api/students HTTP/1.1
-Host: localhost:5000
+Host: tafe-student-api.fly.dev
 Content-Type: application/json
 Accept: application/json
 
@@ -306,7 +306,7 @@ Content-Length: 198
 **Request:**
 ```http
 GET /api/students/9999 HTTP/1.1
-Host: localhost:5000
+Host: tafe-student-api.fly.dev
 Accept: application/json
 ```
 
